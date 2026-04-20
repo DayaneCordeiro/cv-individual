@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Convite</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+  <style>
+    :root {
+      --blue:      #7AAFC8;
+      --blue-dark: #5A8FAA;
+      --blue-pale: #D6E8F2;
+      --cream:     #FAFAF8;
+      --gold:      #C8AA7A;
+      --ink:       #2C3540;
+      --muted:     #7A8794;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      background: var(--cream);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      background-image:
+        radial-gradient(ellipse at 20% 20%, rgba(122,175,200,.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 80%, rgba(200,170,122,.10) 0%, transparent 55%);
+    }
+
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      width: 360px;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow:
+        0 2px 4px rgba(0,0,0,.04),
+        0 12px 40px rgba(0,0,0,.10),
+        0 0 0 1px rgba(122,175,200,.20);
+      position: relative;
+      animation: rise .7s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    @keyframes rise {
+      from { opacity:0; transform: translateY(28px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* ── Header band ── */
+    .header {
+      background: var(--blue);
+      padding: 36px 28px 28px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content:'';
+      position:absolute; inset:0;
+      background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 12px,
+        rgba(255,255,255,.06) 12px,
+        rgba(255,255,255,.06) 13px
+      );
+    }
+
+    .header-label {
+      font-family: 'Jost', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .20em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.70);
+      margin-bottom: 8px;
+    }
+
+    .header-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 34px;
+      font-weight: 300;
+      font-style: italic;
+      color: #fff;
+      line-height: 1.1;
+    }
+
+    /* ── Ornament divider ── */
+    .ornament {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 28px 0;
+    }
+    .ornament-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--blue-pale));
+    }
+    .ornament-line.right {
+      background: linear-gradient(to left, transparent, var(--blue-pale));
+    }
+    .ornament-diamond {
+      width: 6px; height: 6px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+
+    /* ── Body ── */
+    .body {
+      padding: 20px 28px 28px;
+      text-align: center;
+    }
+
+    .invite-for {
+      font-size: 10px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .nomes {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.5;
+      margin-bottom: 4px;
+    }
+
+    /* ── Tag ── */
+    .tag {
+      display: inline-block;
+      margin: 16px 0;
+      padding: 5px 14px;
+      border: 1px solid var(--blue-pale);
+      border-radius: 2px;
+      font-size: 10px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--blue-dark);
+      font-weight: 500;
+    }
+
+    /* ── QR frame ── */
+    .qr-wrap {
+      margin: 4px auto 0;
+      width: fit-content;
+      position: relative;
+      padding: 14px;
+      background: #fff;
+    }
+
+    /* corner brackets */
+    .qr-wrap::before, .qr-wrap::after,
+    .qr-inner::before, .qr-inner::after {
+      content:'';
+      position: absolute;
+      width: 16px; height: 16px;
+      border-color: var(--gold);
+      border-style: solid;
+    }
+    .qr-wrap::before  { top:0;    left:0;  border-width: 2px 0 0 2px; }
+    .qr-wrap::after   { top:0;    right:0; border-width: 2px 2px 0 0; }
+    .qr-inner::before { bottom:0; left:0;  border-width: 0 0 2px 2px; }
+    .qr-inner::after  { bottom:0; right:0; border-width: 0 2px 2px 0; }
+
+    .qr-wrap img {
+      display: block;
+      width: 160px; height: 160px;
+      border-radius: 2px;
+    }
+
+    /* ── Footer note ── */
+    .note {
+      margin-top: 18px;
+      font-size: 12px;
+      color: var(--muted);
+      font-style: italic;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+    }
+
+    /* ── Button ── */
+    .btn-wrap {
+      padding: 0 28px 28px;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 3px;
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Jost', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::after {
+      content:'';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, transparent 0%, rgba(255,255,255,.12) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform .4s;
+    }
+
+    button:hover { background: var(--blue-dark); transform: translateY(-1px); }
+    button:hover::after { transform: translateX(100%); }
+    button:active { transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <div class="card" id="convite">
+
+    <div class="header">
+      <div class="header-label">Você está convidado</div>
+      <div class="header-title">Convite Especial</div>
+    </div>
+
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line right"></div>
+    </div>
+
+    <div class="body">
+      <div class="invite-for">Este convite é para</div>
+      <div class="nomes" id="nomePessoa"></div>
+
+      <div class="tag">Individual &amp; Intransferível</div>
+
+      <div class="qr-wrap">
+        <div class="qr-inner">
+          <img id="qrcode" src="" alt="QR Code">
+        </div>
+      </div>
+
+      <div class="note">A apresentação deste é indispensável.</div>
+    </div>
+
+    <div class="btn-wrap">
+      <button onclick="baixarImagem()">↓ Baixar convite</button>
+    </div>
+
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    let nomes = params.get("nomes");
+    if (!nomes) nomes = "Michelli Alves,Enzo,João";
+
+    const listaNomes = nomes.split(",").map(n => n.trim());
+    document.getElementById("nomePessoa").innerHTML = listaNomes.join("<br>");
+
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Convite-${encodeURIComponent(nomes)}`;
+    const qrImg = document.getElementById("qrcode");
+    qrImg.crossOrigin = "anonymous";
+    qrImg.src = qrUrl;
+
+    function baixarImagem() {
+      const convite = document.getElementById("convite");
+      const btnWrap = document.querySelector(".btn-wrap");
+      btnWrap.style.display = "none";
+      html2canvas(convite, {
+        backgroundColor: "#ffffff",
+        scale: 2,
+        useCORS: true
+      }).then(canvas => {
+        btnWrap.style.display = "";
+        const link = document.createElement("a");
+        link.download = "convite.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+    }
+  </script>
+
+</body>
+</html>
