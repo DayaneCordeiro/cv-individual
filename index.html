@@ -33,7 +33,6 @@
         radial-gradient(ellipse at 80% 80%, rgba(200,170,122,.10) 0%, transparent 55%);
     }
 
-    /* ── Card ── */
     .card {
       background: #fff;
       width: 360px;
@@ -52,7 +51,6 @@
       to   { opacity:1; transform: translateY(0); }
     }
 
-    /* ── Header band ── */
     .header {
       background: var(--blue);
       padding: 36px 28px 28px;
@@ -92,7 +90,6 @@
       line-height: 1.1;
     }
 
-    /* ── Ornament divider ── */
     .ornament {
       display: flex;
       align-items: center;
@@ -114,7 +111,6 @@
       flex-shrink: 0;
     }
 
-    /* ── Body ── */
     .body {
       padding: 20px 28px 28px;
       text-align: center;
@@ -138,7 +134,6 @@
       margin-bottom: 4px;
     }
 
-    /* ── Tag ── */
     .tag {
       display: inline-block;
       margin: 16px 0;
@@ -152,7 +147,6 @@
       font-weight: 500;
     }
 
-    /* ── QR frame ── */
     .qr-wrap {
       margin: 4px auto 0;
       width: fit-content;
@@ -161,7 +155,6 @@
       background: #fff;
     }
 
-    /* corner brackets */
     .qr-wrap::before, .qr-wrap::after,
     .qr-inner::before, .qr-inner::after {
       content:'';
@@ -181,17 +174,14 @@
       border-radius: 2px;
     }
 
-    /* ── Footer note ── */
     .note {
       margin-top: 18px;
-      font-size: 12px;
       color: var(--muted);
       font-style: italic;
       font-family: 'Cormorant Garamond', serif;
       font-size: 15px;
     }
 
-    /* ── Button ── */
     .btn-wrap {
       padding: 0 28px 28px;
     }
@@ -227,6 +217,54 @@
     button:hover { background: var(--blue-dark); transform: translateY(-1px); }
     button:hover::after { transform: translateX(100%); }
     button:active { transform: translateY(0); }
+
+    /* ── iOS Overlay ── */
+    #ios-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,.93);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    #ios-overlay p {
+      color: #fff;
+      font-family: 'Jost', sans-serif;
+      font-size: 13px;
+      letter-spacing: .06em;
+      text-align: center;
+      margin-bottom: 16px;
+      line-height: 1.7;
+      opacity: .85;
+    }
+
+    #ios-overlay img {
+      max-width: 100%;
+      max-height: 65vh;
+      border-radius: 6px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.5);
+    }
+
+    #ios-overlay .close-btn {
+      width: auto;
+      margin-top: 20px;
+      padding: 10px 32px;
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 3px;
+      background: transparent;
+      color: rgba(255,255,255,.7);
+      font-size: 11px;
+      letter-spacing: .14em;
+    }
+
+    #ios-overlay .close-btn:hover {
+      background: rgba(255,255,255,.08);
+      transform: none;
+    }
   </style>
 </head>
 <body>
@@ -260,71 +298,51 @@
     </div>
 
     <div class="btn-wrap">
-      <button onclick="baixarImagem()">↓ Baixar convite</button>
+      <button onclick="baixarImagem()">&#8595; Baixar convite</button>
     </div>
 
   </div>
 
+  <!-- Overlay para iOS Safari -->
+  <div id="ios-overlay">
+    <p>Segure a imagem abaixo e toque em<br><strong>"Salvar na Galeria de Fotos"</strong></p>
+    <img id="overlay-img" src="" alt="Convite">
+    <button class="close-btn" onclick="document.getElementById('ios-overlay').style.display='none'">Fechar</button>
+  </div>
+
   <script>
-    const params = new URLSearchParams(window.location.search);
-    let nomes = params.get("nomes");
+    var params = new URLSearchParams(window.location.search);
+    var nomes = params.get("nomes");
     if (!nomes) nomes = "Convidado";
 
-    const listaNomes = nomes.split(",").map(n => n.trim());
+    var listaNomes = nomes.split(",").map(function(n){ return n.trim(); });
     document.getElementById("nomePessoa").innerHTML = listaNomes.join("<br>");
 
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Convite-${encodeURIComponent(nomes)}`;
-    const qrImg = document.getElementById("qrcode");
+    var qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Convite-" + encodeURIComponent(nomes);
+    var qrImg = document.getElementById("qrcode");
     qrImg.crossOrigin = "anonymous";
     qrImg.src = qrUrl;
 
-    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-    // Overlay para iOS — imagem aparece na mesma página para o usuário segurar e salvar
-    const overlay = document.createElement("div");
-    overlay.style.cssText = "display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.93);flex-direction:column;align-items:center;justify-content:center;padding:24px;";
-    overlay.innerHTML = `
-      <p style="color:#fff;font-family:'Jost',sans-serif;font-size:13px;letter-spacing:.06em;text-align:center;margin-bottom:16px;line-height:1.6;opacity:.85;">
-        Segure a imagem abaixo e toque em<br><strong style="color:#fff;">"Salvar na Galeria de Fotos"</strong>
-      </p>
-      <img id="overlay-img" style="max-width:100%;max-height:65vh;border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,.5);">
-      <button id="overlay-close" style="margin-top:20px;padding:10px 32px;border:1px solid rgba(255,255,255,.25);border-radius:3px;background:transparent;color:rgba(255,255,255,.7);font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;">Fechar</button>
-    `;
-    document.body.appendChild(overlay);
-    document.getElementById("overlay-close").onclick = () => { overlay.style.display = "none"; };
+    var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     function baixarImagem() {
-      const convite = document.getElementById("convite");
-      const btnWrap = document.querySelector(".btn-wrap");
+      var convite = document.getElementById("convite");
+      var btnWrap = document.querySelector(".btn-wrap");
       btnWrap.style.display = "none";
 
       html2canvas(convite, {
         backgroundColor: "#ffffff",
         scale: 2,
         useCORS: true
-      }).then(canvas => {
+      }).then(function(canvas) {
         btnWrap.style.display = "";
-        const dataUrl = canvas.toDataURL("image/png");
+        var dataUrl = canvas.toDataURL("image/png");
 
         if (isIOS) {
-          // iOS Safari: mostra overlay, usuário segura a imagem para salvar na galeria
           document.getElementById("overlay-img").src = dataUrl;
-          overlay.style.display = "flex";
+          document.getElementById("ios-overlay").style.display = "flex";
         } else {
-          // Android e desktop: download direto
-          const link = document.createElement("a");
-          link.download = "convite.png";
-          link.href = dataUrl;
-          link.click();
-        }
-      });
-    }
-  </script>
-</body></html>
-          `);
-          win.document.close();
-        } else {
-          const link = document.createElement("a");
+          var link = document.createElement("a");
           link.download = "convite.png";
           link.href = dataUrl;
           link.click();
