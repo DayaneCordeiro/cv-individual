@@ -278,16 +278,24 @@
     qrImg.crossOrigin = "anonymous";
     qrImg.src = qrUrl;
 
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    // Overlay para iOS — imagem aparece na mesma página para o usuário segurar e salvar
+    const overlay = document.createElement("div");
+    overlay.style.cssText = "display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.93);flex-direction:column;align-items:center;justify-content:center;padding:24px;";
+    overlay.innerHTML = `
+      <p style="color:#fff;font-family:'Jost',sans-serif;font-size:13px;letter-spacing:.06em;text-align:center;margin-bottom:16px;line-height:1.6;opacity:.85;">
+        Segure a imagem abaixo e toque em<br><strong style="color:#fff;">"Salvar na Galeria de Fotos"</strong>
+      </p>
+      <img id="overlay-img" style="max-width:100%;max-height:65vh;border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,.5);">
+      <button id="overlay-close" style="margin-top:20px;padding:10px 32px;border:1px solid rgba(255,255,255,.25);border-radius:3px;background:transparent;color:rgba(255,255,255,.7);font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;">Fechar</button>
+    `;
+    document.body.appendChild(overlay);
+    document.getElementById("overlay-close").onclick = () => { overlay.style.display = "none"; };
 
     function baixarImagem() {
       const convite = document.getElementById("convite");
       const btnWrap = document.querySelector(".btn-wrap");
-
-      // Abre a aba ANTES do async — Safari exige que window.open
-      // seja chamado diretamente no evento de toque do usuário
-      const win = isMobile ? window.open("", "_blank") : null;
-
       btnWrap.style.display = "none";
 
       html2canvas(convite, {
@@ -298,20 +306,21 @@
         btnWrap.style.display = "";
         const dataUrl = canvas.toDataURL("image/png");
 
-        if (isMobile && win) {
-          win.document.write(`
-            <html><head><meta name="viewport" content="width=device-width,initial-scale=1">
-            <style>
-              body { margin:0; background:#111; display:flex; flex-direction:column;
-                     align-items:center; justify-content:center; min-height:100vh; }
-              img  { max-width:100%; border-radius:6px; }
-              p    { color:#fff; font-family:sans-serif; font-size:14px;
-                     text-align:center; margin-top:16px; padding:0 24px; opacity:.75; }
-            </style></head>
-            <body>
-              <img src="${dataUrl}">
-              <p>Segure a imagem e escolha "Salvar na galeria"</p>
-            </body></html>
+        if (isIOS) {
+          // iOS Safari: mostra overlay, usuário segura a imagem para salvar na galeria
+          document.getElementById("overlay-img").src = dataUrl;
+          overlay.style.display = "flex";
+        } else {
+          // Android e desktop: download direto
+          const link = document.createElement("a");
+          link.download = "convite.png";
+          link.href = dataUrl;
+          link.click();
+        }
+      });
+    }
+  </script>
+</body></html>
           `);
           win.document.close();
         } else {
