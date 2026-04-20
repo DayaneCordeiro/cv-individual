@@ -268,7 +268,7 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     let nomes = params.get("nomes");
-    if (!nomes) nomes = "Michelli Alves,Enzo,João";
+    if (!nomes) nomes = "Convidado";
 
     const listaNomes = nomes.split(",").map(n => n.trim());
     document.getElementById("nomePessoa").innerHTML = listaNomes.join("<br>");
