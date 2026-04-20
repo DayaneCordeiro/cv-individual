@@ -278,20 +278,44 @@
     qrImg.crossOrigin = "anonymous";
     qrImg.src = qrUrl;
 
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
     function baixarImagem() {
       const convite = document.getElementById("convite");
       const btnWrap = document.querySelector(".btn-wrap");
       btnWrap.style.display = "none";
+
       html2canvas(convite, {
         backgroundColor: "#ffffff",
         scale: 2,
         useCORS: true
       }).then(canvas => {
         btnWrap.style.display = "";
-        const link = document.createElement("a");
-        link.download = "convite.png";
-        link.href = canvas.toDataURL("image/png");
-        link.click();
+        const dataUrl = canvas.toDataURL("image/png");
+
+        if (isMobile) {
+          const win = window.open();
+          win.document.write(`
+            <html><head><meta name="viewport" content="width=device-width,initial-scale=1">
+            <style>
+              body { margin:0; background:#111; display:flex; flex-direction:column;
+                     align-items:center; justify-content:center; min-height:100vh; }
+              img  { max-width:100%; border-radius:6px; }
+              p    { color:#fff; font-family:sans-serif; font-size:14px;
+                     text-align:center; margin-top:16px; padding:0 24px; opacity:.75; }
+            </style></head>
+            <body>
+              <img src="${dataUrl}">
+              <p>Segure a imagem e escolha "Salvar na galeria"</p>
+            </body></html>
+          `);
+          win.document.close();
+        } else {
+          const link = document.createElement("a");
+          link.download = "convite.png";
+          link.href = dataUrl;
+          link.click();
+        }
       });
     }
   </script>
