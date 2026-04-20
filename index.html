@@ -283,6 +283,11 @@
     function baixarImagem() {
       const convite = document.getElementById("convite");
       const btnWrap = document.querySelector(".btn-wrap");
+
+      // Abre a aba ANTES do async — Safari exige que window.open
+      // seja chamado diretamente no evento de toque do usuário
+      const win = isMobile ? window.open("", "_blank") : null;
+
       btnWrap.style.display = "none";
 
       html2canvas(convite, {
@@ -293,8 +298,7 @@
         btnWrap.style.display = "";
         const dataUrl = canvas.toDataURL("image/png");
 
-        if (isMobile) {
-          const win = window.open();
+        if (isMobile && win) {
           win.document.write(`
             <html><head><meta name="viewport" content="width=device-width,initial-scale=1">
             <style>
